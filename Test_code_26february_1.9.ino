@@ -1,9 +1,8 @@
+#include <Keyboard.h> // Keyboard functionality
 
-#include <Keyboard.h> // Klaviatuuri funktsionaalsus
-
-int buttonPin = 2; // Nupp
-int switchPin = 4; // Slaider
-int sensorPin = A0; // Valgussensor
+int buttonPin = 2; // Button
+int switchPin = 4; // Slider
+int sensorPin = A0; // Light sensor
 
 int LED = 6;
 int stateLED = LOW;
@@ -15,23 +14,23 @@ long debounce = 200;
 boolean switchState = 0;
 boolean lastSwitchState = 0;
 
+
 void setup()
 {
   Serial.begin(9600);
   Keyboard.begin();
 
-  pinMode(buttonPin, INPUT); // Nupp
-  pinMode(switchPin, INPUT); // Slaider
-  pinMode(sensorPin, INPUT); // Valgussensor
-  pinMode(LED, OUTPUT); // Sinine valgus
+  pinMode(buttonPin, INPUT); // Button
+  pinMode(switchPin, INPUT); // Slider
+  pinMode(sensorPin, INPUT); // Light sensor
+  pinMode(LED, OUTPUT); // Blue LED light
 }
 
 
-
 void loop()
-{ // Koodi algus
+{ // Beginning
 
-  // Sinine LED
+  // Blue LED light
   stateButton = digitalRead(buttonPin);  
   if(stateButton == HIGH && previous == LOW && millis() - time > debounce) {
     if(stateLED == HIGH){
@@ -44,52 +43,48 @@ void loop()
   digitalWrite(LED, stateLED);
   previous == stateButton;
 
-
-  // Nupp
+  // Button
   if (digitalRead(buttonPin) == HIGH)
   {
     Keyboard.press(KEY_LEFT_GUI);
     Keyboard.press(KEY_LEFT_SHIFT);
-    Keyboard.press('A'); // Mute-Unmute
+    Keyboard.press('A'); // Voice mute-unmute
     delay(250);
     Keyboard.releaseAll();
     delay(250);
   }
 
-
-  // Slaider
+  // Slider
   switchState = digitalRead(switchPin);
   
   if (switchState != lastSwitchState) {
     if (switchState == HIGH) {
           Keyboard.press(KEY_LEFT_GUI);
           Keyboard.press(KEY_LEFT_SHIFT);
-          Keyboard.press('V'); // Video On-Off
+          Keyboard.press('V'); // Video on-off
           delay(250);
           Keyboard.releaseAll();
           delay(250);          
     } else if (switchState == LOW) {
           Keyboard.press(KEY_LEFT_GUI);
           Keyboard.press(KEY_LEFT_SHIFT);
-          Keyboard.press('V'); // Video On-Off
+          Keyboard.press('V'); // Video on-off
           delay(250);
           Keyboard.releaseAll();
           delay(250); 
     }
   } lastSwitchState = switchState;
 
-
-  // Valgussensor
+  // Light sensor
   int value = analogRead(A0);
   
   if (analogRead(A0) < 300)
   {
     Keyboard.press(KEY_LEFT_GUI);
-    Keyboard.press(KEY_LEFT_SHIFT);
-    Keyboard.press('V'); // Ajutiselt video
+    Keyboard.press('W'); // Leave meeting
     Keyboard.releaseAll();
     delay(5000);
   } else if (analogRead(A0) > 300) {
   }
     
-} // Koodi lõpp
+} // End of code
